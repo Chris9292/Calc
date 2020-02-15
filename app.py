@@ -9,16 +9,16 @@ number_of_rooms = 40
 # dict contructor to match room number with corresponding category
 def selector(x):
     if x<11:
-        return 1
+        return 0
     elif x<21:
-        return 2
+        return 1
     elif x<31:
-        return 3
+        return 2
     else:
-        return 4
+        return 3
 
 categories = {str(i): selector(i) for i in range(1, number_of_rooms+1)}
-
+print(categories)
 class Room:
 
     # read xlsx file with pandas
@@ -33,22 +33,27 @@ class Room:
 
     # calculate total amount
     def calculate(self, start, end):
-        vat = 1.24
         total = 0
         current_day = start
         delta = datetime.timedelta(days=1)
-
+        print(self.prices_weekdays)
+        print(self.prices_weekend)
+        print()
         # for each day calculate price
         while current_day < end:
-            if start.weekday() >= 4:
-                total += self.prices_weekend.loc[current_day.month]
+            print(f'current month: {current_day.month}')
+            print()
+            if current_day.weekday() >= 4:
+                day_price = self.prices_weekend.loc[current_day.month]
             else:
-                total += self.prices_weekdays.loc[current_day.month]
-
+                day_price = self.prices_weekdays.loc[current_day.month]
+            total += day_price
+            print(f' current_day: {current_day}, {current_day.weekday()}, price: {day_price}')
+            k = input('press for continue:')
             # increment current day by 1 day
             current_day += delta
 
-        return f'Category: {self.category},  arrival date: {start}, departure date: {end}, total: {total*vat} €'
+        return f'Category: {self.category},  arrival date: {start}, departure date: {end}, total: {total} €'
 
 
 while True:
